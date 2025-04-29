@@ -90,10 +90,12 @@ struct BeatyView: View {
   }
 }
 
+#if canImport(AppKit)
 extension NSColor {
   static let secondarySystemGroupedBackground: NSColor = .systemGray
   static let secondarySystemBackground: NSColor  = .systemGray
 }
+#endif
 
 extension View {
   func doubleBorder() -> some View {

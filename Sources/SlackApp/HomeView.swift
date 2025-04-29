@@ -22,9 +22,45 @@ enum Menu: CaseIterable {
     var description: String
   }
 }
+extension UIImage {
+  convenience init(uiColor: UIColor) {
+    let createImage = { (rawColor: UIColor) -> UIImage in
+      let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+      UIGraphicsBeginImageContext(rect.size)
+      let context = UIGraphicsGetCurrentContext()!
+      context.setFillColor(rawColor.cgColor)
+      context.fill(rect)
+      let image = UIGraphicsGetImageFromCurrentImageContext()!
+      UIGraphicsEndImageContext()
+      return image
+    }
+
+    self.init()
+
+    let appearances: [UIUserInterfaceStyle] = [.light, .dark]
+    appearances.forEach {
+      let traitCollection = UITraitCollection(userInterfaceStyle: $0)
+      self.imageAsset?.register(
+        createImage(uiColor.resolvedColor(with: traitCollection)),
+        with: traitCollection
+      )
+    }
+  }
+}
+
+enum SearchTabItem: String, CaseIterable {
+  case recents = "Recents"
+  case files = "Files"
+  case canvases = "Canvases"
+  case channels = "Channels"
+  case people = "People"
+  case workflows = "Workflows"
+}
 
 struct HomeView: View {
   @State var text: String = ""
+  @FocusState var searchBarFocused: Bool?
+  @State var selectedTab: SearchTabItem = .recents
 
   var multiMenuSection: some View {
     Section {
@@ -146,7 +182,7 @@ struct HomeView: View {
               .offset(x: 5, y: 5)
               .overlay {
                 Circle()
-                  .foregroundStyle(.white)
+                  .foregroundStyle(.green)
                   .frame(width: 7, height: 7)
                   .offset(x: 4, y: 4)
               }
@@ -155,8 +191,28 @@ struct HomeView: View {
     }
   }
   
-  var body: some View {
-    NavigationStack {
+  @ViewBuilder
+  var content: some View {
+    if searchBarFocused == true {
+      TabView(selection: $selectedTab) {
+        ForEach(SearchTabItem.allCases, id: \.self) { tab in
+          Tab(value: tab) {
+            List {
+              ForEach(0..<30) { i in
+                Text("\(tab.rawValue) \(i)")
+                  .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+              }
+            }
+            .introspect(.list, on: .iOS(.v18)) {
+              $0.contentInset.top = -35
+            }
+          } label: {
+            Label(tab.rawValue, systemImage: "house")
+          }
+        }
+      }
+      .tabViewStyle(.page)
+    } else {
       List {
         multiMenuSection
         externalConnectionSection
@@ -166,12 +222,47 @@ struct HomeView: View {
         addTeammatesButton
       }
       .listStyle(.inset)
+    }
+  }
+  
+  var body: some View {
+    NavigationStack {
+      content
+      .safeAreaInset(edge: .top, spacing: 0) {
+        if searchBarFocused == true {
+          ScrollView(.horizontal) {
+            HStack {
+              Picker("Select Tab", selection: $selectedTab) {
+                ForEach(SearchTabItem.allCases, id: \.self) { tab in
+                  Text(tab.rawValue)
+                }
+              }
+              .pickerStyle(.segmented)
+              .padding(.horizontal, 10)
+              .padding(.vertical, 5)
+            }
+          }
+          .background(Color.slack)
+        }
+      }
+      .introspect(.picker(style: .segmented), on: .iOS(.v18)) {
+        $0.setDividerImage(
+          UIImage(uiColor: .clear),
+          forLeftSegmentState: .normal,
+          rightSegmentState: .normal,
+          barMetrics: .default
+        )
+        $0.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+        $0.setTitleTextAttributes([.foregroundColor: UIColor(.slack)], for: .selected)
+        $0.selectedSegmentTintColor = UIColor(red: 226/255, green: 207/255, blue: 217/255, alpha: 1)
+      }
       #if !os(macOS)
       .navigationBarTitleDisplayMode(.inline)
       .toolbarBackground(Color.slack, for: .navigationBar)
       .toolbarBackground(.visible, for: .navigationBar)
       #endif
       .searchable(text: $text, prompt: "Jump to or search...")
+      .searchFocused($searchBarFocused, equals: true)
       .toolbar {
         toolbar
       }
@@ -186,8 +277,7 @@ struct HomeView: View {
           .padding(10)
       }
     }
-    #if os(macOS)
-    #else
+    #if os(iOS)
     .introspect(.searchField, on: .iOS(.v18)) {
       $0.searchTextField.attributedPlaceholder = NSAttributedString(
         string: "Jump to or search...",
@@ -206,6 +296,7 @@ struct HomeView: View {
       $0.tintColor = .white
       // set text color
       $0.searchTextField.textColor = .white
+      $0.searchTextField.backgroundColor = UIColor(red: 184/255, green: 127/255, blue: 180/255, alpha: 0.5)
     }
     #endif
   }
