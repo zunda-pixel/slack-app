@@ -219,6 +219,7 @@ struct HomeView: View {
           .background(Color.slack)
         }
       }
+      // MARK: contentがGroupのためPicker直下につけても効果がない
       .introspect(.picker(style: .segmented), on: .iOS(.v18)) {
         $0.setDividerImage(
           UIImage(uiColor: .clear),
