@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftUIIntrospect
 
-enum Menu: CaseIterable {
+enum MenuItem: CaseIterable {
   case threads
   case huddles
   case todos
@@ -33,6 +33,7 @@ enum SearchTabItem: String, CaseIterable {
 }
 
 struct HomeView: View {
+  @State var isPresentedNewContents: Bool = false
   @State var text: String = ""
   @FocusState var searchBarFocused: Bool?
   @State var selectedTab: SearchTabItem = .recents
@@ -40,8 +41,8 @@ struct HomeView: View {
   var multiMenuSection: some View {
     Section {
       ScrollView(.horizontal) {
-        LazyHStack {
-          ForEach(Menu.allCases, id: \.self) { menu in
+        HStack {
+          ForEach(MenuItem.allCases, id: \.self) { menu in
             VStack(alignment: .leading) {
               Image(systemName: menu.item.systemImage)
               Text(menu.item.title)
@@ -72,26 +73,42 @@ struct HomeView: View {
   
   @ViewBuilder
   var externalConnectionSection: some View {
-    Section("External Connection") {
+    DisclosureGroup {
       
+    } label: {
+      Text("External Connection")
+        .bold()
+        .padding(.vertical, 8)
     }
   }
   
   @ViewBuilder
   var chanelsSection: some View {
-    Section("Channels") {
+    DisclosureGroup {
+    } label: {
+      Text("Channels")
+        .bold()
+        .padding(.vertical, 8)
     }
   }
   
   @ViewBuilder
   var directMessagesSection: some View {
-    Section("Direct Messages") {
+    DisclosureGroup {
+    } label: {
+      Text("Direct Messages")
+        .bold()
+        .padding(.vertical, 8)
     }
   }
   
   @ViewBuilder
   var appsSection: some View {
-    Section("Apps") {
+    DisclosureGroup {
+    } label: {
+      Text("Apps")
+        .bold()
+        .padding(.vertical, 8)
     }
   }
   
@@ -101,6 +118,7 @@ struct HomeView: View {
     } label: {
       Label("Add teammates", systemImage: "plus")
     }
+    .foregroundStyle(.secondary)
   }
   
   @ToolbarContentBuilder
@@ -189,13 +207,48 @@ struct HomeView: View {
     } else {
       List {
         multiMenuSection
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
         externalConnectionSection
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
         chanelsSection
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
         directMessagesSection
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
         appsSection
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
         addTeammatesButton
+          .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .listRowBackground(
+            Rectangle()
+              .foregroundStyle(.thinMaterial)
+          )
       }
       .listStyle(.inset)
+      .scrollContentBackground(.hidden)
+      .background(
+        Rectangle()
+        .foregroundStyle(.thinMaterial)
+      )
     }
   }
   
@@ -242,14 +295,82 @@ struct HomeView: View {
         toolbar
       }
       .overlay(alignment: .bottomTrailing) {
-        Image(systemName: "square.and.pencil")
-          .foregroundStyle(.white)
-          .padding(15)
-          .background {
-            Circle()
-              .fill(Color.slack)
+        Button {
+          isPresentedNewContents.toggle()
+        } label: {
+          Image(systemName: "plus")
+            .foregroundStyle(.white)
+            .padding(15)
+            .background {
+              Circle()
+                .fill(Color.slack)
+            }
+            .padding(10)
+        }
+      }
+      .sheet(isPresented: $isPresentedNewContents) {
+        List {
+          Button {
+            
+          } label: {
+            Label {
+              VStack(alignment: .leading) {
+                Text("Huddle")
+                  .bold()
+                Text("Start an audio or video chat")
+                  .font(.caption)
+              }
+            } icon: {
+              RoundedRectangle(cornerRadius: 9)
+                .fill(Color.slack.opacity(0.5))
+                .frame(width: 40, height: 40)
+                .overlay {
+                  Image(systemName: "headphones")
+                    .imageScale(.medium)
+                    .foregroundStyle(Color.thinPink)
+                }
+            }
           }
-          .padding(10)
+          .tint(.white)
+          .listRowSeparator(.hidden)
+
+          Button {
+            
+          } label: {
+            Label {
+              VStack(alignment: .leading) {
+                Text("Channel")
+                  .bold()
+                Text("Organize teams and work")
+                  .font(.caption)
+              }
+            } icon: {
+              RoundedRectangle(cornerRadius: 9)
+                .fill(Color.slack.opacity(0.5))
+                .frame(width: 40, height: 40)
+                .overlay {
+                  Text("#")
+                    .foregroundStyle(Color.thinPink)
+                }
+            }
+          }
+          .tint(.white)
+          .listRowSeparator(.hidden)
+          
+          Button {
+            
+          } label: {
+            Text("\(Image(systemName: "square.and.pencil"))  Message")
+              .frame(maxWidth: .infinity)
+              .padding(.vertical, 8)
+              .foregroundStyle(Color.thinPink)
+          }
+          .bold()
+          .foregroundStyle(.white)
+          .background(Color.slack, in: .rect(cornerRadius: 14))
+          .listRowSeparator(.hidden)
+        }
+        .presentationDetents([.height(230)])
       }
     }
     #if os(iOS)
