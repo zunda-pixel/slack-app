@@ -22,31 +22,6 @@ enum Menu: CaseIterable {
     var description: String
   }
 }
-extension UIImage {
-  convenience init(uiColor: UIColor) {
-    let createImage = { (rawColor: UIColor) -> UIImage in
-      let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-      UIGraphicsBeginImageContext(rect.size)
-      let context = UIGraphicsGetCurrentContext()!
-      context.setFillColor(rawColor.cgColor)
-      context.fill(rect)
-      let image = UIGraphicsGetImageFromCurrentImageContext()!
-      UIGraphicsEndImageContext()
-      return image
-    }
-
-    self.init()
-
-    let appearances: [UIUserInterfaceStyle] = [.light, .dark]
-    appearances.forEach {
-      let traitCollection = UITraitCollection(userInterfaceStyle: $0)
-      self.imageAsset?.register(
-        createImage(uiColor.resolvedColor(with: traitCollection)),
-        with: traitCollection
-      )
-    }
-  }
-}
 
 enum SearchTabItem: String, CaseIterable {
   case recents = "Recents"
@@ -197,21 +172,20 @@ struct HomeView: View {
       TabView(selection: $selectedTab) {
         ForEach(SearchTabItem.allCases, id: \.self) { tab in
           Tab(value: tab) {
-            List {
-              ForEach(0..<30) { i in
-                Text("\(tab.rawValue) \(i)")
-                  .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-              }
-            }
-            .introspect(.list, on: .iOS(.v18)) {
-              $0.contentInset.top = -35
+            switch tab {
+            case .recents: RecentListView()
+            case .files: FileListView()
+            case .canvases: CanvasListView()
+            case .channels: ChannelListView()
+            case .people: PersonListView()
+            case .workflows: WorkflowListView()
             }
           } label: {
             Label(tab.rawValue, systemImage: "house")
           }
         }
       }
-      .tabViewStyle(.page)
+      .tabViewStyle(.page(indexDisplayMode: .never))
     } else {
       List {
         multiMenuSection
@@ -304,8 +278,4 @@ struct HomeView: View {
 
 #Preview {
   HomeView()
-}
-
-extension Color {
-  static let slack = Color(red: 60/255, green: 16/255, blue: 66/255)
 }
