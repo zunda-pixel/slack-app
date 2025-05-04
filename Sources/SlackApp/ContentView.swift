@@ -53,6 +53,9 @@ struct ContentView: View {
           }
       }
     }
+    .introspect(.tabView(style: .page), on: .iOS(.v18)) {
+      $0.backgroundColor = .secondarySystemBackground
+    }
   }
 }
 
