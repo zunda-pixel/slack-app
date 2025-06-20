@@ -210,12 +210,14 @@ struct HomeView: View {
       List {
         multiMenuSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         externalConnectionSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width  + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
