@@ -222,24 +222,28 @@ struct HomeView: View {
           )
         chanelsSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         directMessagesSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         appsSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         addTeammatesButton
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
