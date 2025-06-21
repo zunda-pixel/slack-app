@@ -282,7 +282,7 @@ struct HomeView: View {
       }
       #if !os(macOS)
       // MARK: contentがGroupのためPicker直下につけても効果がない
-      .introspect(.picker(style: .segmented), on: .iOS(.v18)) {
+      .introspect(.picker(style: .segmented), on: .iOS(.v18, .v26)) {
         $0.setDividerImage(
           UIImage(uiColor: .clear),
           forLeftSegmentState: .normal,
@@ -384,7 +384,7 @@ struct HomeView: View {
       }
     }
     #if !os(macOS)
-    .introspect(.searchField, on: .iOS(.v18)) {
+    .introspect(.searchField, on: .iOS(.v18, .v26)) {
       $0.searchTextField.attributedPlaceholder = NSAttributedString(
         string: "Jump to or search...",
         attributes: [.foregroundColor: UIColor.white]
