@@ -44,13 +44,11 @@ struct ContentView: View {
   var body: some View {
     TabView(selection: $selectedTab) {
       ForEach(TabItem.allCases, id: \.self) { tabItem in
-        tabView(tab: tabItem)
-          .tag(tabItem)
-          .tabItem {
-            Label(tabItem.rawValue, systemImage: tabItem.systemImage)
-              // https://stackoverflow.com/questions/70057749/why-swiftui-tabitem-systemimage-is-filled
-              .environment(\.symbolVariants, tabItem == selectedTab ? .fill : .none)
-          }
+        Tab(value: tabItem) {
+          tabView(tab: tabItem)
+        } label: {
+          Label(tabItem.rawValue, systemImage: tabItem.systemImage)
+        }
       }
     }
     #if !os(macOS)
