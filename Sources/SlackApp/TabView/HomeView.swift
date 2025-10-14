@@ -203,41 +203,49 @@ struct HomeView: View {
           }
         }
       }
+      #if !os(macOS)
       .tabViewStyle(.page(indexDisplayMode: .never))
+      #endif
     } else {
       List {
         multiMenuSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         externalConnectionSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width  + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         chanelsSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         directMessagesSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         appsSection
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
           )
         addTeammatesButton
           .alignmentGuide(.listRowSeparatorLeading) { _ in  -20 }
+          .alignmentGuide(.listRowSeparatorTrailing) { $0.width + 20 }
           .listRowBackground(
             Rectangle()
               .foregroundStyle(.thinMaterial)
@@ -272,8 +280,9 @@ struct HomeView: View {
           .background(Color.slack)
         }
       }
+      #if !os(macOS)
       // MARK: contentがGroupのためPicker直下につけても効果がない
-      .introspect(.picker(style: .segmented), on: .iOS(.v18)) {
+      .introspect(.picker(style: .segmented), on: .iOS(.v18, .v26)) {
         $0.setDividerImage(
           UIImage(uiColor: .clear),
           forLeftSegmentState: .normal,
@@ -284,6 +293,7 @@ struct HomeView: View {
         $0.setTitleTextAttributes([.foregroundColor: UIColor(.slack)], for: .selected)
         $0.selectedSegmentTintColor = UIColor(red: 226/255, green: 207/255, blue: 217/255, alpha: 1)
       }
+      #endif
       #if !os(macOS)
       .navigationBarTitleDisplayMode(.inline)
       .toolbarBackground(Color.slack, for: .navigationBar)
@@ -373,8 +383,8 @@ struct HomeView: View {
         .presentationDetents([.height(230)])
       }
     }
-    #if os(iOS)
-    .introspect(.searchField, on: .iOS(.v18)) {
+    #if !os(macOS)
+    .introspect(.searchField, on: .iOS(.v18, .v26)) {
       $0.searchTextField.attributedPlaceholder = NSAttributedString(
         string: "Jump to or search...",
         attributes: [.foregroundColor: UIColor.white]

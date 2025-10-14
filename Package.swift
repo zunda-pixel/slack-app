@@ -1,12 +1,12 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2
 
 import PackageDescription
 
 let package = Package(
   name: "SlackApp",
   platforms: [
-    .iOS(.v18),
-    .macOS(.v15),
+    .iOS(.v26),
+    .macOS(.v26),
   ],
   products: [
     .library(
@@ -15,7 +15,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/siteline/swiftui-introspect", from: "1.3.0"),
+    .package(url: "https://github.com/siteline/swiftui-introspect.git", from: "26.0.0"),
   ],
   targets: [
     .target(
