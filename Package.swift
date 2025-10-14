@@ -15,7 +15,7 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(url: "https://github.com/siteline/swiftui-introspect.git", from: "1.4.0-beta.2"),
+    .package(url: "https://github.com/siteline/swiftui-introspect.git", from: "26.0.0"),
   ],
   targets: [
     .target(

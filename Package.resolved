@@ -1,13 +1,13 @@
 {
-  "originHash" : "0ef61c4416c2707fb6f6a6b495a7b0d8322454c2669f34a53ebdebe26458aa85",
+  "originHash" : "b84aa4d768db469e62082e5faa88ac94028274ca7d7d4c840dbe63ced6dc1555",
   "pins" : [
     {
       "identity" : "swiftui-introspect",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/siteline/swiftui-introspect",
       "state" : {
-        "revision" : "c2b0625d0ef385994e4c6bc36116c0e7bfa6dafa",
-        "version" : "1.4.0-beta.2"
+        "revision" : "a08b87f96b41055577721a6e397562b21ad52454",
+        "version" : "26.0.0"
       }
     }
   ],
