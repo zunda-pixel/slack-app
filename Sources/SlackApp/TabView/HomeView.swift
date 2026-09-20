@@ -130,7 +130,6 @@ struct HomeView: View {
     #endif
     
     ToolbarItem(placement: placement1) {
-      HStack(spacing: 4) {
         Button {
           
         } label: {
@@ -139,16 +138,24 @@ struct HomeView: View {
             .frame(width: 20, height: 20)
             .foregroundStyle(Color.slack)
             .padding(6)
-            .background {
-              RoundedRectangle(cornerRadius: 9)
-                .fill(Color.yellow)
-            }
+            .background(Color.yellow, in: .circle)
         }
-        Text("Acmec Inc")
-          .bold()
-          .foregroundStyle(.white)
-      }
+        
     }
+      
+      ToolbarSpacer(placement: placement1)
+    
+      ToolbarItem(placement: placement1) {
+          Button {
+          } label: {
+              Text("Acmec Inc")
+                  .bold()
+                  .foregroundStyle(.white)
+          }
+      }
+      .sharedBackgroundVisibility(.hidden)
+      .contentMarginsRemoved()
+      
     
     #if os(macOS)
     let placement2: ToolbarItemPlacement = .navigation
@@ -164,10 +171,7 @@ struct HomeView: View {
           .frame(width: 22, height: 22)
           .foregroundStyle(.white)
           .padding(5)
-          .background {
-            RoundedRectangle(cornerRadius: 9)
-              .fill(Color.pink)
-          }
+          .background(Color.pink, in: .circle)
           .overlay(alignment: .bottomTrailing) {
             Circle()
               .fill(Color.slack)
@@ -253,6 +257,7 @@ struct HomeView: View {
       }
       .listStyle(.inset)
       .scrollContentBackground(.hidden)
+      .background(.thinMaterial)
       .background(
         Rectangle()
         .foregroundStyle(.thinMaterial)
@@ -263,7 +268,7 @@ struct HomeView: View {
   var body: some View {
     NavigationStack {
       content
-      .safeAreaInset(edge: .top, spacing: 0) {
+      .safeAreaBar(edge: .top, spacing: 0) {
         if searchBarFocused == true {
           ScrollView(.horizontal) {
             HStack {
@@ -282,7 +287,7 @@ struct HomeView: View {
       }
       #if !os(macOS)
       // MARK: contentがGroupのためPicker直下につけても効果がない
-      .introspect(.picker(style: .segmented), on: .iOS(.v18, .v26)) {
+      .introspect(.picker(style: .segmented), on: .iOS(.v18, .v26, .v27)) {
         $0.setDividerImage(
           UIImage(uiColor: .clear),
           forLeftSegmentState: .normal,
@@ -294,11 +299,9 @@ struct HomeView: View {
         $0.selectedSegmentTintColor = UIColor(red: 226/255, green: 207/255, blue: 217/255, alpha: 1)
       }
       #endif
-      #if !os(macOS)
-      .navigationBarTitleDisplayMode(.inline)
+      .toolbarTitleDisplayMode(.inline)
       .toolbarBackground(Color.slack, for: .navigationBar)
       .toolbarBackground(.visible, for: .navigationBar)
-      #endif
       .searchable(text: $text, prompt: "Jump to or search...")
       .searchFocused($searchBarFocused, equals: true)
       .toolbar {
@@ -384,7 +387,7 @@ struct HomeView: View {
       }
     }
     #if !os(macOS)
-    .introspect(.searchField, on: .iOS(.v18, .v26)) {
+    .introspect(.searchField, on: .iOS(.v18, .v26, .v27)) {
       $0.searchTextField.attributedPlaceholder = NSAttributedString(
         string: "Jump to or search...",
         attributes: [.foregroundColor: UIColor.white]
